@@ -12,12 +12,14 @@ class UsageLimit extends Model
         'date',
         'ai_messages',
         'voice_messages',
+        'lesson_generation',
     ];
 
     protected $casts = [
-        'date'           => 'date',
-        'ai_messages'    => 'integer',
-        'voice_messages' => 'integer',
+        'date'              => 'date',
+        'ai_messages'       => 'integer',
+        'voice_messages'    => 'integer',
+        'lesson_generation' => 'integer',
     ];
 
     // ─── Relacionamentos ─────────────────────────────────────────────────────
@@ -36,7 +38,7 @@ class UsageLimit extends Model
     {
         return static::firstOrCreate(
             ['user_id' => $userId, 'date' => now()->toDateString()],
-            ['ai_messages' => 0, 'voice_messages' => 0]
+            ['ai_messages' => 0, 'voice_messages' => 0, 'lesson_generation' => 0]
         );
     }
 

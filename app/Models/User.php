@@ -133,6 +133,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(UsageLimit::class);
     }
 
+    public function usageLogs(): HasMany
+    {
+        return $this->hasMany(UsageLog::class);
+    }
+
     // ─── Accessors ──────────────────────────────────────────────────────────
 
     public function getTotalStudyMinutesAttribute(): int

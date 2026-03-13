@@ -190,8 +190,13 @@ Route::prefix('v1')->group(function () {
 
         // Subscription & Plans
         Route::prefix('subscription')->group(function () {
-            Route::get('/',       [SubscriptionController::class, 'show']);
-            Route::get('plans',   [SubscriptionController::class, 'plans']);
+            Route::get('/',        [SubscriptionController::class, 'show']);
+            Route::get('plans',    [SubscriptionController::class, 'plans']);
+            Route::post('upgrade', [SubscriptionController::class, 'upgrade']);
+            Route::get('logs',     [SubscriptionController::class, 'logs']);
         });
+
+        // Alias público para listagem de planos
+        Route::get('plans', [SubscriptionController::class, 'plans']);
     });
 });

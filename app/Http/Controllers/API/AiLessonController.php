@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Models\GeneratedLesson;
 use App\Services\AdaptiveTutorService;
 use App\Services\AiLessonGeneratorService;
+use App\Services\SubscriptionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -13,6 +14,7 @@ class AiLessonController extends BaseController
     public function __construct(
         private AiLessonGeneratorService $generator,
         private AdaptiveTutorService     $adaptiveTutor,
+        private SubscriptionService      $subscriptions,
     ) {
     }
 
@@ -40,6 +42,11 @@ class AiLessonController extends BaseController
 
         $user = auth()->user();
 
+        // ── Verificar limite diário de geração de lições ──────────────────────
+        if (!$this->subscriptions->canUseFeature($user, 'lesson_generation')) {
+            return $this->limitExceeded('lesson_generation');
+        }
+
         // ── Resolver parâmetros: usar body ou AdaptiveTutor automaticamente ──────
         [$level, $topic, $grammarFocus] = $this->resolveParameters(
             $user,
@@ -50,6 +57,14 @@ class AiLessonController extends BaseController
 
         // ── Gerar lição ───────────────────────────────────────────────────────────
         $lesson = $this->generator->generateLesson($user, $level, $topic, $grammarFocus);
+
+        // Registrar uso de lesson_generation (contador diário + log)
+        $this->subscriptions->registerUsage($user, 'lesson_generation', [
+            'lesson_id' => $lesson['id'],
+            'level'     => $level,
+            'topic'     => $topic,
+            'driver'    => $lesson['driver'],
+        ]);
 
         $message = $lesson['driver'] === 'openai'
             ? 'Lição gerada pela IA com sucesso!'

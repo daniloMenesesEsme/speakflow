@@ -45,8 +45,8 @@ class AiController extends BaseController
         $user = auth()->user();
 
         // ── Verificar limite diário de IA ─────────────────────────────────────
-        if (!$this->subscriptions->checkAiLimit($user)) {
-            return $this->limitExceeded('ai');
+        if (!$this->subscriptions->canUseFeature($user, 'ai_message')) {
+            return $this->limitExceeded('ai_message');
         }
 
         $result = $this->tutor->chat(
@@ -57,8 +57,10 @@ class AiController extends BaseController
             topicId:         $validated['topic_id'] ?? null,
         );
 
-        // Incrementa uso de IA do dia
-        $this->subscriptions->incrementAiUsage($user);
+        // Registra uso de IA (contador diário + log permanente)
+        $this->subscriptions->registerUsage($user, 'ai_message', [
+            'conversation_id' => $result['conversation_id'],
+        ]);
 
         // Missão diária: conversa com tutor
         $this->missions->updateProgress($user, 'conversation');
@@ -97,8 +99,8 @@ class AiController extends BaseController
         $convId       = $validated['conversation_id'] ?? null;
 
         // ── Verificar limite diário de voz ────────────────────────────────────
-        if (!$this->subscriptions->checkVoiceLimit($user)) {
-            return $this->limitExceeded('voice');
+        if (!$this->subscriptions->canUseFeature($user, 'voice_message')) {
+            return $this->limitExceeded('voice_message');
         }
 
         // ── Buscar conversa existente se fornecida ────────────────────────────
@@ -136,8 +138,10 @@ class AiController extends BaseController
             topicId:        $validated['topic_id'] ?? null,
         );
 
-        // Incrementa uso de voz do dia
-        $this->subscriptions->incrementVoiceUsage($user);
+        // Registra uso de voz (contador diário + log permanente)
+        $this->subscriptions->registerUsage($user, 'voice_message', [
+            'voice_message_id' => $transcriptionResult['voice_message_id'],
+        ]);
 
         // Missão diária: mensagem de voz
         $this->missions->updateProgress($user, 'voice_message');
