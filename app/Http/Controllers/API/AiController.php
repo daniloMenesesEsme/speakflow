@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Models\AiConversation;
 use App\Services\AiTutorService;
 use App\Services\DailyMissionService;
+use App\Services\SubscriptionService;
 use App\Services\VoiceTranscriptionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -15,6 +16,7 @@ class AiController extends BaseController
         private AiTutorService            $tutor,
         private VoiceTranscriptionService $voice,
         private DailyMissionService       $missions,
+        private SubscriptionService       $subscriptions,
     ) {
     }
 
@@ -40,7 +42,13 @@ class AiController extends BaseController
             'topic_id'        => 'nullable|integer|exists:conversation_topics,id',
         ]);
 
-        $user   = auth()->user();
+        $user = auth()->user();
+
+        // ── Verificar limite diário de IA ─────────────────────────────────────
+        if (!$this->subscriptions->checkAiLimit($user)) {
+            return $this->limitExceeded('ai');
+        }
+
         $result = $this->tutor->chat(
             user:            $user,
             userMessage:     $validated['message'],
@@ -49,8 +57,11 @@ class AiController extends BaseController
             topicId:         $validated['topic_id'] ?? null,
         );
 
+        // Incrementa uso de IA do dia
+        $this->subscriptions->incrementAiUsage($user);
+
         // Missão diária: conversa com tutor
-        $this->missions->updateProgress(auth()->user(), 'conversation');
+        $this->missions->updateProgress($user, 'conversation');
 
         return $this->success([
             'reply'           => $result['reply'],
@@ -84,6 +95,11 @@ class AiController extends BaseController
         $user         = auth()->user();
         $audioFile    = $validated['audio_file'];
         $convId       = $validated['conversation_id'] ?? null;
+
+        // ── Verificar limite diário de voz ────────────────────────────────────
+        if (!$this->subscriptions->checkVoiceLimit($user)) {
+            return $this->limitExceeded('voice');
+        }
 
         // ── Buscar conversa existente se fornecida ────────────────────────────
         $conversation = $convId
@@ -119,6 +135,9 @@ class AiController extends BaseController
             conversationId: $conversation?->id,
             topicId:        $validated['topic_id'] ?? null,
         );
+
+        // Incrementa uso de voz do dia
+        $this->subscriptions->incrementVoiceUsage($user);
 
         // Missão diária: mensagem de voz
         $this->missions->updateProgress($user, 'voice_message');

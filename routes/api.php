@@ -5,6 +5,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\ConversationTopicController;
 use App\Http\Controllers\API\LearningAnalyticsController;
 use App\Http\Controllers\API\MissionController;
+use App\Http\Controllers\API\SubscriptionController;
 use App\Http\Controllers\API\LearningController;
 use App\Http\Controllers\API\LeaderboardController;
 use App\Http\Controllers\API\LessonController;
@@ -169,6 +170,12 @@ Route::prefix('v1')->group(function () {
             Route::get('today',    [MissionController::class, 'today']);
             Route::get('progress', [MissionController::class, 'progress']);
             Route::get('check',    [MissionController::class, 'check']);
+        });
+
+        // Subscription & Plans
+        Route::prefix('subscription')->group(function () {
+            Route::get('/',       [SubscriptionController::class, 'show']);
+            Route::get('plans',   [SubscriptionController::class, 'plans']);
         });
     });
 });

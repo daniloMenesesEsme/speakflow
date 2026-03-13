@@ -58,6 +58,24 @@ class BaseController extends Controller
         return $this->error($message, null, 401);
     }
 
+    protected function limitExceeded(string $resource = 'ai'): JsonResponse
+    {
+        $labels = [
+            'ai'    => 'mensagens de IA',
+            'voice' => 'mensagens de voz',
+        ];
+
+        $label = $labels[$resource] ?? $resource;
+
+        return response()->json([
+            'success'          => false,
+            'message'          => "Limite diário de {$label} atingido.",
+            'error'            => 'Daily ' . strtoupper($resource) . ' limit reached',
+            'upgrade_required' => true,
+            'upgrade_url'      => url('/api/v1/subscription/plans'),
+        ], 429);
+    }
+
     protected function paginated(
         mixed $paginator,
         string $message = 'Listagem realizada com sucesso.'

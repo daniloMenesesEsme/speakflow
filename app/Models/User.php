@@ -118,6 +118,16 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(AiVoiceMessage::class);
     }
 
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
+    public function usageLimits(): HasMany
+    {
+        return $this->hasMany(UsageLimit::class);
+    }
+
     // ─── Accessors ──────────────────────────────────────────────────────────
 
     public function getTotalStudyMinutesAttribute(): int
