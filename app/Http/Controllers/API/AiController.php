@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Models\AiConversation;
 use App\Services\AiTutorService;
+use App\Services\DailyMissionService;
 use App\Services\VoiceTranscriptionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -11,8 +12,9 @@ use Illuminate\Http\Request;
 class AiController extends BaseController
 {
     public function __construct(
-        private AiTutorService          $tutor,
+        private AiTutorService            $tutor,
         private VoiceTranscriptionService $voice,
+        private DailyMissionService       $missions,
     ) {
     }
 
@@ -46,6 +48,9 @@ class AiController extends BaseController
             topic:           $validated['topic'] ?? null,
             topicId:         $validated['topic_id'] ?? null,
         );
+
+        // Missão diária: conversa com tutor
+        $this->missions->updateProgress(auth()->user(), 'conversation');
 
         return $this->success([
             'reply'           => $result['reply'],
@@ -114,6 +119,9 @@ class AiController extends BaseController
             conversationId: $conversation?->id,
             topicId:        $validated['topic_id'] ?? null,
         );
+
+        // Missão diária: mensagem de voz
+        $this->missions->updateProgress($user, 'voice_message');
 
         return $this->success([
             'transcription'     => $transcription,

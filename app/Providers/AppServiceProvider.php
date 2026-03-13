@@ -8,6 +8,7 @@ use App\Services\AiTutorService;
 use App\Services\ConversationEngine;
 use App\Services\DailyActivityService;
 use App\Services\LeaderboardService;
+use App\Services\DailyMissionService;
 use App\Services\LearningAnalyticsService;
 use App\Services\LearningEngine;
 use App\Services\PronunciationAnalyzer;
@@ -48,6 +49,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(AiTutorService::class);
         $this->app->singleton(VoiceTranscriptionService::class);
         $this->app->singleton(LearningAnalyticsService::class);
+        $this->app->singleton(DailyMissionService::class);
     }
 
     public function boot(): void

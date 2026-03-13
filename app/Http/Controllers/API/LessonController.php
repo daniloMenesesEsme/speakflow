@@ -7,6 +7,7 @@ use App\Models\Language;
 use App\Models\UserLessonProgress;
 use App\Services\AchievementService;
 use App\Services\DailyActivityService;
+use App\Services\DailyMissionService;
 use App\Services\LeaderboardService;
 use App\Services\LearningEngine;
 use Illuminate\Http\JsonResponse;
@@ -20,6 +21,7 @@ class LessonController extends BaseController
         private DailyActivityService $dailyActivity,
         private AchievementService   $achievementService,
         private LeaderboardService   $leaderboard,
+        private DailyMissionService  $missions,
     ) {
     }
 
@@ -223,6 +225,7 @@ class LessonController extends BaseController
 
         // ── Verificar e conceder conquistas desbloqueadas ─────────────────────
         $newAchievements = $this->achievementService->checkAndAwardAchievements($user->fresh());
+        $this->missions->updateProgress($user, 'lesson');
 
         $freshUser = $user->fresh();
 

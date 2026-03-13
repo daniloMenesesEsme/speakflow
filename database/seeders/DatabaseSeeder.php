@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             DialogueSeeder::class,
             AchievementSeeder::class,
             ConversationTopicSeeder::class,
+            DailyMissionSeeder::class,
         ]);
 
         User::factory()->create([

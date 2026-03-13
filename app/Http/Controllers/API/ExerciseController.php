@@ -8,6 +8,7 @@ use App\Models\StudySession;
 use App\Models\UserExerciseAttempt;
 use App\Services\AchievementService;
 use App\Services\DailyActivityService;
+use App\Services\DailyMissionService;
 use App\Services\LeaderboardService;
 use App\Services\LearningEngine;
 use Illuminate\Http\JsonResponse;
@@ -22,6 +23,7 @@ class ExerciseController extends BaseController
         private AchievementService   $achievementService,
         private DailyActivityService $dailyActivity,
         private LeaderboardService   $leaderboard,
+        private DailyMissionService  $missions,
     ) {
     }
 
@@ -179,6 +181,7 @@ class ExerciseController extends BaseController
             );
 
             $this->achievementService->checkAndAwardAchievements($user->fresh());
+            $this->missions->updateProgress($user, 'exercise');
         }
 
         // ── Montar resposta ───────────────────────────────────────────────────

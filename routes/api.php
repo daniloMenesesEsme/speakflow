@@ -4,6 +4,7 @@ use App\Http\Controllers\API\AiController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\ConversationTopicController;
 use App\Http\Controllers\API\LearningAnalyticsController;
+use App\Http\Controllers\API\MissionController;
 use App\Http\Controllers\API\LearningController;
 use App\Http\Controllers\API\LeaderboardController;
 use App\Http\Controllers\API\LessonController;
@@ -161,6 +162,13 @@ Route::prefix('v1')->group(function () {
             Route::get('learning',  [LearningAnalyticsController::class, 'learning']);
             Route::get('topics',    [LearningAnalyticsController::class, 'topics']);
             Route::get('ai-usage',  [LearningAnalyticsController::class, 'aiUsage']);
+        });
+
+        // Daily Missions
+        Route::prefix('missions')->group(function () {
+            Route::get('today',    [MissionController::class, 'today']);
+            Route::get('progress', [MissionController::class, 'progress']);
+            Route::get('check',    [MissionController::class, 'check']);
         });
     });
 });
