@@ -5,6 +5,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\ConversationTopicController;
 use App\Http\Controllers\API\LearningAnalyticsController;
 use App\Http\Controllers\API\AdaptiveTutorController;
+use App\Http\Controllers\API\AiLessonController;
 use App\Http\Controllers\API\MissionController;
 use App\Http\Controllers\API\SubscriptionController;
 use App\Http\Controllers\API\LearningController;
@@ -82,6 +83,11 @@ Route::prefix('v1')->group(function () {
                 Route::get('topics',     [AdaptiveTutorController::class, 'topics']);
                 Route::get('exercises',  [AdaptiveTutorController::class, 'exercises']);
             });
+
+            // Gerador de Lições com IA
+            Route::post('generate-lesson',       [AiLessonController::class, 'generate']);
+            Route::get('lessons',                [AiLessonController::class, 'history']);
+            Route::get('lessons/{id}',           [AiLessonController::class, 'show']);
         });
 
         // Lições

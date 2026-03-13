@@ -123,6 +123,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Subscription::class);
     }
 
+    public function generatedLessons(): HasMany
+    {
+        return $this->hasMany(GeneratedLesson::class);
+    }
+
     public function usageLimits(): HasMany
     {
         return $this->hasMany(UsageLimit::class);
