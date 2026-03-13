@@ -8,6 +8,7 @@ use App\Services\AiTutorService;
 use App\Services\ConversationEngine;
 use App\Services\DailyActivityService;
 use App\Services\LeaderboardService;
+use App\Services\AdaptiveTutorService;
 use App\Services\DailyMissionService;
 use App\Services\SubscriptionService;
 use App\Services\LearningAnalyticsService;
@@ -52,6 +53,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(LearningAnalyticsService::class);
         $this->app->singleton(DailyMissionService::class);
         $this->app->singleton(SubscriptionService::class);
+        $this->app->singleton(AdaptiveTutorService::class);
     }
 
     public function boot(): void

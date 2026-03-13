@@ -4,6 +4,7 @@ use App\Http\Controllers\API\AiController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\ConversationTopicController;
 use App\Http\Controllers\API\LearningAnalyticsController;
+use App\Http\Controllers\API\AdaptiveTutorController;
 use App\Http\Controllers\API\MissionController;
 use App\Http\Controllers\API\SubscriptionController;
 use App\Http\Controllers\API\LearningController;
@@ -72,6 +73,15 @@ Route::prefix('v1')->group(function () {
             Route::get('corrections',                   [AiController::class, 'corrections']);
             Route::get('conversations',                 [AiController::class, 'conversations']);
             Route::get('conversations/{conversation}',  [AiController::class, 'history']);
+
+            // Tutor Adaptativo
+            Route::prefix('adaptive-plan')->group(function () {
+                Route::get('/',          [AdaptiveTutorController::class, 'plan']);
+                Route::get('level',      [AdaptiveTutorController::class, 'level']);
+                Route::get('grammar',    [AdaptiveTutorController::class, 'grammar']);
+                Route::get('topics',     [AdaptiveTutorController::class, 'topics']);
+                Route::get('exercises',  [AdaptiveTutorController::class, 'exercises']);
+            });
         });
 
         // Lições
