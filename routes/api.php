@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\AiController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\ConversationTopicController;
+use App\Http\Controllers\API\LearningAnalyticsController;
 use App\Http\Controllers\API\LearningController;
 use App\Http\Controllers\API\LeaderboardController;
 use App\Http\Controllers\API\LessonController;
@@ -151,6 +152,15 @@ Route::prefix('v1')->group(function () {
         Route::prefix('conversation-topics')->group(function () {
             Route::get('/',         [ConversationTopicController::class, 'index']);
             Route::get('{conversationTopic}', [ConversationTopicController::class, 'show']);
+        });
+
+        // Learning Analytics
+        Route::prefix('analytics')->group(function () {
+            Route::get('/',         [LearningAnalyticsController::class, 'index']);
+            Route::get('general',   [LearningAnalyticsController::class, 'general']);
+            Route::get('learning',  [LearningAnalyticsController::class, 'learning']);
+            Route::get('topics',    [LearningAnalyticsController::class, 'topics']);
+            Route::get('ai-usage',  [LearningAnalyticsController::class, 'aiUsage']);
         });
     });
 });
