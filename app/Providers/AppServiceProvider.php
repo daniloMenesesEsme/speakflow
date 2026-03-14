@@ -12,6 +12,7 @@ use App\Services\AdaptiveTutorService;
 use App\Services\AiLessonGeneratorService;
 use App\Services\DailyMissionService;
 use App\Services\SubscriptionService;
+use App\Services\AiCostAnalyticsService;
 use App\Services\LearningAnalyticsService;
 use App\Services\LearningEngine;
 use App\Services\PronunciationAnalyzer;
@@ -56,6 +57,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(SubscriptionService::class);
         $this->app->singleton(AdaptiveTutorService::class);
         $this->app->singleton(AiLessonGeneratorService::class);
+        $this->app->singleton(AiCostAnalyticsService::class);
     }
 
     public function boot(): void

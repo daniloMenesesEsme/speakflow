@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\Admin\AiCostController;
 use App\Http\Controllers\API\AiController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\ConversationTopicController;
@@ -198,5 +199,16 @@ Route::prefix('v1')->group(function () {
 
         // Alias público para listagem de planos
         Route::get('plans', [SubscriptionController::class, 'plans']);
+    });
+});
+
+// ─── Admin: AI Cost Analytics ─────────────────────────────────────────────
+// Requer autenticação JWT + flag is_admin = true no usuário
+Route::prefix('admin')->middleware(['auth:api', 'admin'])->group(function () {
+    Route::prefix('ai-cost')->group(function () {
+        Route::get('today',          [AiCostController::class, 'today']);
+        Route::get('trend',          [AiCostController::class, 'trend']);
+        Route::get('by-feature',     [AiCostController::class, 'byFeature']);
+        Route::get('by-user/{id}',   [AiCostController::class, 'byUser']);
     });
 });

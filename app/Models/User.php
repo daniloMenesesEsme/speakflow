@@ -26,6 +26,7 @@ class User extends Authenticatable implements JWTSubject
         'streak_days',
         'last_study_date',
         'avatar',
+        'is_admin',
     ];
 
     protected $hidden = [
@@ -39,7 +40,13 @@ class User extends Authenticatable implements JWTSubject
             'email_verified_at' => 'datetime',
             'last_study_date'   => 'date',
             'password'          => 'hashed',
+            'is_admin'          => 'boolean',
         ];
+    }
+
+    public function isAdmin(): bool
+    {
+        return (bool) $this->is_admin;
     }
 
     public function getJWTIdentifier(): mixed
