@@ -65,6 +65,7 @@ Route::prefix('v1')->group(function () {
             Route::get('/',       [PlacementTestController::class, 'index']);
             Route::post('submit', [PlacementTestController::class, 'submit']);
             Route::get('latest',  [PlacementTestController::class, 'latest']);
+            Route::get('initial-plan', [PlacementTestController::class, 'initialPlan']);
         });
 
         // Estatísticas e conquistas do usuário

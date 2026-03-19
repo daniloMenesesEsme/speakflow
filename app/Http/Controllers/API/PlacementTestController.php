@@ -55,5 +55,14 @@ class PlacementTestController extends BaseController
 
         return $this->success($result, 'Último resultado de nivelamento.');
     }
+
+    public function initialPlan(Request $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = $request->user();
+        $plan = $this->placement->getInitialPlan($user);
+
+        return $this->success($plan, 'Plano inicial carregado com sucesso.');
+    }
 }
 

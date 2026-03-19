@@ -155,6 +155,41 @@ class PlacementTestService
         ];
     }
 
+    public function getInitialPlan(User $user): array
+    {
+        $latest = $this->latestResult($user);
+        $level = $latest['level'] ?? ($user->level ?: 'A1');
+
+        $recommended = Lesson::query()
+            ->active()
+            ->where('level', $level)
+            ->whereHas('language', fn ($q) => $q->where('code', $user->target_language))
+            ->orderBy('order')
+            ->limit(7)
+            ->get(['id', 'title', 'level', 'category', 'order'])
+            ->map(fn ($lesson) => [
+                'id' => $lesson->id,
+                'title' => $lesson->title,
+                'level' => $lesson->level,
+                'category' => $lesson->category,
+                'order' => $lesson->order,
+            ])
+            ->values()
+            ->toArray();
+
+        return [
+            'placement_completed' => (bool) $latest,
+            'current_level' => $level,
+            'placement' => $latest,
+            'weekly_plan' => [
+                'goal_days' => 5,
+                'goal_minutes_per_day' => max(10, (int) $user->daily_goal_minutes),
+                'suggested_lessons_count' => min(5, count($recommended)),
+            ],
+            'recommended_lessons' => array_slice($recommended, 0, 5),
+        ];
+    }
+
     private function mapScoreToLevel(float $score): string
     {
         return match (true) {
