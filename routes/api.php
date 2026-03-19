@@ -7,6 +7,7 @@ use App\Http\Controllers\API\ConversationTopicController;
 use App\Http\Controllers\API\LearningAnalyticsController;
 use App\Http\Controllers\API\AdaptiveTutorController;
 use App\Http\Controllers\API\AiLessonController;
+use App\Http\Controllers\API\PlacementTestController;
 use App\Http\Controllers\API\MissionController;
 use App\Http\Controllers\API\SubscriptionController;
 use App\Http\Controllers\API\LearningController;
@@ -30,6 +31,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('v1')->group(function () {
+
+    // Webhook de pagamento (publico)
+    Route::post('subscription/webhook/stripe', [SubscriptionController::class, 'stripeWebhook']);
 
     // ─── Autenticação (público) ───────────────────────────────────────────
     Route::prefix('auth')->group(function () {
@@ -55,6 +59,13 @@ Route::prefix('v1')->group(function () {
 
         // Dashboard
         Route::get('dashboard', [StudySessionController::class, 'dashboard']);
+
+        // Placement test (nivelamento inicial)
+        Route::prefix('placement-test')->group(function () {
+            Route::get('/',       [PlacementTestController::class, 'index']);
+            Route::post('submit', [PlacementTestController::class, 'submit']);
+            Route::get('latest',  [PlacementTestController::class, 'latest']);
+        });
 
         // Estatísticas e conquistas do usuário
         Route::get('users/stats',        [UserController::class, 'stats']);
@@ -194,6 +205,7 @@ Route::prefix('v1')->group(function () {
             Route::get('/',        [SubscriptionController::class, 'show']);
             Route::get('plans',    [SubscriptionController::class, 'plans']);
             Route::post('upgrade', [SubscriptionController::class, 'upgrade']);
+            Route::post('checkout',[SubscriptionController::class, 'checkout']);
             Route::get('logs',     [SubscriptionController::class, 'logs']);
         });
 

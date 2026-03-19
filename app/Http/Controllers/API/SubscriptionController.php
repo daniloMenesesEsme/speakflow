@@ -58,6 +58,49 @@ class SubscriptionController extends BaseController
     }
 
     /**
+     * POST /api/v1/subscription/checkout
+     *
+     * Inicia checkout em provedor de pagamento (Stripe).
+     * Body: { "plan": "pro" }
+     */
+    public function checkout(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'plan' => 'required|string|exists:plans,slug',
+        ]);
+
+        $result = $this->subscriptions->createStripeCheckoutSession(auth()->user(), $validated['plan']);
+
+        if (! ($result['success'] ?? false)) {
+            return $this->error($result['message'] ?? 'Nao foi possivel iniciar checkout.', null, 422);
+        }
+
+        return $this->success($result, 'Checkout iniciado com sucesso.');
+    }
+
+    /**
+     * POST /api/v1/subscription/webhook/stripe
+     *
+     * Endpoint publico para confirmacao de pagamento.
+     */
+    public function stripeWebhook(Request $request): JsonResponse
+    {
+        $result = $this->subscriptions->processStripeWebhook($request);
+
+        if (! ($result['ok'] ?? false)) {
+            return response()->json([
+                'success' => false,
+                'message' => $result['message'] ?? 'Webhook invalido.',
+            ], $result['status'] ?? 400);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => $result['message'] ?? 'Webhook processado.',
+        ], $result['status'] ?? 200);
+    }
+
+    /**
      * GET /api/v1/subscription/logs
      *
      * Histórico de uso do usuário: ai_message, voice_message, lesson_generation.

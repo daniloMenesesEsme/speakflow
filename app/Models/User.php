@@ -145,6 +145,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(UsageLog::class);
     }
 
+    public function placementResults(): HasMany
+    {
+        return $this->hasMany(UserPlacementResult::class);
+    }
+
     // ─── Accessors ──────────────────────────────────────────────────────────
 
     public function getTotalStudyMinutesAttribute(): int

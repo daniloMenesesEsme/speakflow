@@ -110,6 +110,7 @@ class AuthController extends BaseController
             'target_language'    => 'sometimes|string|max:10',
             'daily_goal_minutes' => 'sometimes|integer|min:5|max:120',
             'avatar'             => 'sometimes|string|nullable',
+            'level'              => 'sometimes|string|in:A1,A2,B1,B2,C1,C2',
         ]);
 
         if ($validator->fails()) {
@@ -117,7 +118,7 @@ class AuthController extends BaseController
         }
 
         $user->update($request->only([
-            'name', 'native_language', 'target_language', 'daily_goal_minutes', 'avatar',
+            'name', 'native_language', 'target_language', 'daily_goal_minutes', 'avatar', 'level',
         ]));
 
         return $this->success($this->formatUser($user), 'Perfil atualizado com sucesso.');

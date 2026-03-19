@@ -15,6 +15,7 @@ use App\Services\SubscriptionService;
 use App\Services\AiCostAnalyticsService;
 use App\Services\LearningAnalyticsService;
 use App\Services\LearningEngine;
+use App\Services\PlacementTestService;
 use App\Services\PronunciationAnalyzer;
 use App\Services\VoiceTranscriptionService;
 use App\Services\Speech\Drivers\AzureSpeechDriver;
@@ -58,6 +59,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(AdaptiveTutorService::class);
         $this->app->singleton(AiLessonGeneratorService::class);
         $this->app->singleton(AiCostAnalyticsService::class);
+        $this->app->singleton(PlacementTestService::class);
     }
 
     public function boot(): void
